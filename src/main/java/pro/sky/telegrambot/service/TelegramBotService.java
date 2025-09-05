@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.Reminder;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;

@@ -3,7 +3,7 @@ package pro.sky.telegrambot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
+
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.Reminder;
 import pro.sky.telegrambot.repositiry.ReminderRepository;
