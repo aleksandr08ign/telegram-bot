@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pro.sky.telegrambot.Reminder;
-import pro.sky.telegrambot.repositiry.ReminderRepository;
+import pro.sky.telegrambot.repository.ReminderRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

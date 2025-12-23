@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.Reminder;
-import pro.sky.telegrambot.repositiry.ReminderRepository;
+import pro.sky.telegrambot.repository.ReminderRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
