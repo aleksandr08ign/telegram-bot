@@ -1,0 +1,2 @@
+src/test/java/pro/sky/telegrambot/service/ReminderServiceTest.java
+src/test/java/pro/sky/telegrambot/service/TelegramBotServiceTest.java
