@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.Reminder;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -34,7 +34,7 @@ public class TelegramBotService {
         log.info("Telegram bot инициализирован");
     }
 
-    private void processUpdates(List<Update> updates) {
+    void processUpdates(List<Update> updates) {
         updates.forEach(update -> {
             if (update.message() != null && update.message().text() != null) {
                 processMesage(update.message().chat().id(), update.message().text());
@@ -42,7 +42,7 @@ public class TelegramBotService {
         });
     }
 
-    private void processMesage(Long chatId, String text) {
+    void processMesage(Long chatId, String text) {
         log.info("Получено сообщение: {} из чата {}", text, chatId);
 
         if ("/start".equals(text)) {
@@ -54,7 +54,7 @@ public class TelegramBotService {
         }
     }
 
-    private void sendWelcomeMessage(Long chatId) {
+    void sendWelcomeMessage(Long chatId) {
         String message = "Привет! Я бот для напоминаний.\\n\\n" +
                 "Отправь мне сообщение в формате:\n" +
                 "01.01.2022 20:00 Сделать домашнюю работу\n\n" +
@@ -65,7 +65,7 @@ public class TelegramBotService {
         sendMessage(chatId, message);
     }
 
-    private void processReminderMessage (Long chatId, String text) {
+    void processReminderMessage(Long chatId, String text) {
         boolean success = reminderService.parseAndSaveReminder(chatId, text);
 
         if (success) {
@@ -77,7 +77,7 @@ public class TelegramBotService {
         }
     }
 
-    private void showUserReminders (Long chatId) {
+    void showUserReminders(Long chatId) {
         var reminders = reminderService.getUserReminders(chatId);
 
         if (reminders.isEmpty()) {
@@ -100,14 +100,16 @@ public class TelegramBotService {
 
         log.info("Найдено {} напоминаний для отправки.", remindersToSend.size());
 
-        for (Reminder reminder : remindersToSend) {
-            String message = String.format("Напоминание: %s", reminder.getMessageText());
-            sendMessage(reminder.getChatId(), message);
+        if (!remindersToSend.isEmpty()) {
+            for (Reminder reminder : remindersToSend) {
+                String message = String.format("Напоминание: %s", reminder.getMessageText());
+                sendMessage(reminder.getChatId(), message);
+            }
+            reminderService.markAsSent(remindersToSend); //отмечаем отправленные
         }
-        reminderService.markAsSent(remindersToSend); //отмечаем отправленные
     }
 
-    public void sendMessage (Long chatId, String message) {
+    public void sendMessage(Long chatId, String message) {
         try {
             SendMessage sendMessage = new SendMessage(chatId, message);
             telegramBot.execute(sendMessage);
@@ -117,7 +119,6 @@ public class TelegramBotService {
         }
 
     }
-
 
 
 }

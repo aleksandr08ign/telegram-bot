@@ -3,10 +3,10 @@ package pro.sky.telegrambot.service;
 import com.pengrad.telegrambot.TelegramBot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
+
 import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.Reminder;
-import pro.sky.telegrambot.repositiry.ReminderRepository;
+import pro.sky.telegrambot.repository.ReminderRepository;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
@@ -16,7 +16,6 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 @Slf4j
 @Service
@@ -37,8 +36,7 @@ public class ReminderService {
         repository.saveAll(reminders);
     }
 
-    // Паттерн для сообщения: "01.01.2022 20:00 Сделать домашнюю работу"
-    private static final Pattern MESSAGE_PATTERN = Pattern.compile("([0-9\\.\\:\\s]{16})(\\s)(.+)");
+    private static final Pattern MESSAGE_PATTERN = Pattern.compile("(\\d{2}\\.\\d{2}\\.\\d{4} \\d{2}:\\d{2})\\s+(.+)");
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
@@ -47,10 +45,17 @@ public class ReminderService {
 
         if (matcher.find()) {
             String dataTimeString = matcher.group(1);
-            String taskText = matcher.group(3);
+            String taskText = matcher.group(2);
 
             try {
                 LocalDateTime reminderDataTime = LocalDateTime.parse(dataTimeString, DATE_TIME_FORMATTER);
+
+                LocalDateTime now = LocalDateTime.now();
+
+                log.debug("Reminder time: {}", reminderDataTime);
+                log.debug("Current time: {}", now);
+                log.debug("Is reminder in future? {}", reminderDataTime.isAfter(now));
+
                 if (reminderDataTime.isBefore(LocalDateTime.now())) {
                     log.warn("Попытка создать напоминание в прошлом: {}", reminderDataTime);
                     return false;
